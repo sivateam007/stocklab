@@ -102,6 +102,48 @@ python -m stocklab ingest ; python -m stocklab screen
 
 ---
 
+## Web app (local + Render)
+
+The dashboard is the same Streamlit app locally and in the cloud:
+
+```powershell
+streamlit run app/dashboard.py      # http://localhost:8501
+```
+
+**Deploy it on [Render](https://render.com)** — the repo already contains a
+`Dockerfile`, a `render.yaml` Blueprint, `requirements-web.txt` (no torch /
+transformers, so the image stays small) and `.streamlit/config.toml`.
+
+1. Create an empty GitHub repository and push this project:
+   ```powershell
+   git remote add origin https://github.com/<you>/<repo>.git
+   git push -u origin main
+   ```
+   Note: `data/features.parquet` is ~90 MB (under GitHub's 100 MB limit) —
+   the first push is ~120 MB and takes a minute.
+2. In Render: **New → Blueprint** → select that repository. Render reads
+   `render.yaml`, builds the Docker image and starts the service.
+3. Open the URL it gives you (`https://stocklab-<something>.onrender.com`).
+   Health checks hit Streamlit's built-in `/_stcore/health`.
+
+Updating the live app = refreshing data locally and pushing:
+
+```powershell
+python -m stocklab ingest ; python -m stocklab screen
+git add -A ; git commit -m "data update" ; git push
+```
+
+`autoDeployTrigger: commit` redeploy automatically on every push.
+
+Known trade-offs of the free plan (0.1 CPU / 512 MB): the service **spins down
+after ~15 min idle**, so the first page load takes ~30-60 s; the Backtest page
+can take minutes instead of seconds. Move `plan:` in `render.yaml` to
+`0.5c-512mb` or `1c-2g` if that bothers you. The deployed app only *reads*
+the precomputed data baked into the image — run `ingest`/`screen` on your own
+machine to refresh it.
+
+---
+
 ## Files produced
 
 | Path | Contents |
