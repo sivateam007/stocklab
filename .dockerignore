@@ -1,0 +1,11 @@
+.git
+.gitignore
+**/__pycache__
+**/*.pyc
+.pytest_cache
+experiments
+tests
+reports/*.html
+reports/*.csv
+data/cache
+.streamlit/secrets.toml

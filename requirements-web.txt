@@ -1,0 +1,11 @@
+# Dependencies for the deployed web app (app/dashboard.py).
+# Torch/transformers are deliberately excluded: they are only needed for the
+# optional FinBERT news backend on the CLI, and would add ~2 GB to the image.
+pandas==2.3.3
+numpy==2.4.4
+pyarrow==24.0.0
+requests==2.33.1
+yfinance==0.2.58
+TA-Lib==0.7.1
+streamlit==1.60.0
+plotly==6.9.0

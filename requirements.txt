@@ -1,0 +1,10 @@
+pandas>=2.3
+numpy>=2.0
+pyarrow>=15.0
+requests>=2.31
+yfinance>=0.2.50
+TA-Lib>=0.6
+streamlit>=1.40
+plotly>=5.20
+transformers>=4.40
+torch>=2.2

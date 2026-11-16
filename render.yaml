@@ -1,0 +1,16 @@
+# Render Blueprint: https://render.com/docs/infrastructure-as-code
+# Connect this repo in the Render dashboard -> "New" -> "Blueprint".
+services:
+  - type: web
+    name: stocklab
+    runtime: docker
+    plan: free                 # 0.1 CPU / 512 MB. Upgrade to 0.5c-512mb or
+                               # 1c-2g if the Backtest page feels slow.
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /_stcore/health   # Streamlit's built-in health endpoint
+    autoDeployTrigger: commit  # every push to main redeploys automatically
+    maxShutdownDelaySeconds: 60
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"

@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.streamlit/secrets.toml
+data/cache/
+reports/*.html
+reports/*.csv
+experiments/_tmp_*.py
