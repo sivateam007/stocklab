@@ -174,7 +174,12 @@ def page_stock() -> None:
     uni = load_universe()
     names = dict(zip(uni["symbol"], uni["name"])) if not uni.empty else {}
     options = df["symbol"].tolist()
-    symbol = st.selectbox("Stock", options, index=0)
+    # deep link: /?page=Stock%20detail&symbol=SBIN
+    want = st.query_params.get("symbol")
+    index = options.index(want) if want in options else 0
+    symbol = st.selectbox("Stock", options, index=index)
+    if st.query_params.get("symbol") != symbol:
+        st.query_params["symbol"] = symbol
     row = df[df["symbol"] == symbol].iloc[0]
 
     c1, c2, c3, c4, c5 = st.columns(5)
@@ -332,6 +337,13 @@ def page_news() -> None:
 
 
 # ------------------------------------------------------------------ shell
+def _page_index() -> int:
+    """Deep-link support: /?page=Market opens that page directly."""
+    want = st.query_params.get("page")
+    pages = ["Screener", "Stock detail", "Market", "News", "Backtest"]
+    return pages.index(want) if want in pages else 0
+
+
 def main() -> None:
     st.sidebar.title("Stocklab")
     m = load_market()
@@ -340,7 +352,8 @@ def main() -> None:
     st.sidebar.caption(f"As of {m.get('as_of')} · VIX {m.get('vix')} · "
                        f"breadth {m.get('breadth_50dma')}%")
 
-    page = st.sidebar.radio("Page", ["Screener", "Stock detail", "Market", "News", "Backtest"])
+    page = st.sidebar.radio("Page", ["Screener", "Stock detail", "Market", "News", "Backtest"],
+                            index=_page_index())
     st.sidebar.divider()
     st.sidebar.caption(C.DISCLAIMER)
 
